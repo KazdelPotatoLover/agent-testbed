@@ -1,0 +1,96 @@
+schema_version: '1'
+task_id: T001
+revision: m1.0
+instruction: Extract buyer, supplier, amount, currency, start_date, payment_days from
+  input/contract.md. Write answer.json; each field has string value and paragraph
+  ID evidence. Preserve the original value text.
+inputs:
+- path: input/contract.md
+  sha256: 48d7acb87faf85585cc40363350f1ed453ea8e34e4c523db7dd3f5cfdfe22af3
+outputs:
+- path: answer.json
+  kind: json
+  json_schema:
+    type: object
+    additionalProperties: false
+    required:
+    - buyer
+    - supplier
+    - amount
+    - currency
+    - start_date
+    - payment_days
+    properties:
+      buyer:
+        type: object
+        additionalProperties: false
+        required:
+        - value
+        - evidence
+        properties:
+          value:
+            type: string
+          evidence:
+            type: string
+            pattern: ^P[1-6]$
+      supplier:
+        type: object
+        additionalProperties: false
+        required:
+        - value
+        - evidence
+        properties:
+          value:
+            type: string
+          evidence:
+            type: string
+            pattern: ^P[1-6]$
+      amount:
+        type: object
+        additionalProperties: false
+        required:
+        - value
+        - evidence
+        properties:
+          value:
+            type: string
+          evidence:
+            type: string
+            pattern: ^P[1-6]$
+      currency:
+        type: object
+        additionalProperties: false
+        required:
+        - value
+        - evidence
+        properties:
+          value:
+            type: string
+          evidence:
+            type: string
+            pattern: ^P[1-6]$
+      start_date:
+        type: object
+        additionalProperties: false
+        required:
+        - value
+        - evidence
+        properties:
+          value:
+            type: string
+          evidence:
+            type: string
+            pattern: ^P[1-6]$
+      payment_days:
+        type: object
+        additionalProperties: false
+        required:
+        - value
+        - evidence
+        properties:
+          value:
+            type: string
+          evidence:
+            type: string
+            pattern: ^P[1-6]$
+fixture_driver: extract_contract

@@ -21,8 +21,25 @@
 
 </div>
 
-> **项目状态 · 早期开发**
-> 本文展示产品设计与目标能力。实现、接入示例和使用文档将随版本逐步完善。
+> **项目状态 · M1 无模型闭环可运行**
+> 已实现两道合成任务、两个确定性 mock 系统，通过 Inspect 执行、独立评分并生成可追溯报告；不调用真实模型或 BB。下文其余架构能力仍是产品目标，取消/恢复、预算网关和生产隔离尚未实现。
+
+## 快速开始（零真实模型调用）
+
+需要 Python 3.12 和 uv。从仓库根目录运行：
+
+```bash
+uv sync --locked --group dev
+uv run agent-eval validate experiments/smoke-mock.yaml
+uv run agent-eval dry-run experiments/smoke-mock.yaml
+uv run agent-eval run experiments/smoke-mock.yaml
+```
+
+预期结果：4 次运行全部正常结束；`mock-pass` 两题通过，`mock-wrong-answer` 两题失败，真实模型请求和 token 均为 0。终端返回报告路径；这是工程验证，不是实际 Agent 能力排名。
+
+- [M1 使用与边界](<docs/quickstart.md>)
+- [Inspect 兼容性实测记录](<docs/compatibility/inspect-m0.md>)
+- [详细开发方案](<docs/development-plan.md>)
 
 ---
 

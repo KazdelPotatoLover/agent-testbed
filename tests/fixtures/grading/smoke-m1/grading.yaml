@@ -1,0 +1,18 @@
+schema_version: '1'
+grader_id: smoke-m1
+revision: '1'
+rules:
+- task_id: T001
+  task_revision: m1.0
+  output_path: answer.json
+  kind: exact_json
+  expected:
+    path: contract.expected.json
+    sha256: e80cc19e218f313e01cf1cc067580ed9380f74948598462af0f3d51ad3943d08
+- task_id: T003
+  task_revision: m1.0
+  output_path: discrepancies.csv
+  kind: csv_rows
+  expected:
+    path: orders.expected.csv
+    sha256: 9b7057b94bde27bbf8dee4f3000acd8befadfe8b126839e362aeaea8dc7ca6ae

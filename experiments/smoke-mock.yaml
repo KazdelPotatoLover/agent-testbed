@@ -1,0 +1,18 @@
+schema_version: '1'
+name: smoke-mock-m1
+suite: ../suites/smoke-m1/suite.yaml
+grading: ../tests/fixtures/grading/smoke-m1/grading.yaml
+systems:
+- mock-pass
+- mock-wrong-answer
+repeats: 1
+backend: inspect
+model_profile: null
+execution:
+  mode: mock
+  max_concurrent_runs: 1
+  infrastructure_retries: 0
+  wall_time_seconds: 30
+limits:
+  real_model_requests: 0
+  experiment_total_tokens: 0

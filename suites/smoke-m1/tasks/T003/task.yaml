@@ -1,0 +1,23 @@
+schema_version: '1'
+task_id: T003
+revision: m1.0
+instruction: Reconcile input/left.csv against input/right.csv by order_id. Write discrepancies.csv
+  with columns order_id,issue,left_amount,right_amount. Only include exceptions. Duplicate
+  keys on either side take precedence (issue=duplicate; amount=last row on that side);
+  otherwise report missing_left, missing_right, or amount_mismatch. Compare amounts
+  as decimal, preserve original strings and use empty strings for absent sides. Rows
+  may be in any order.
+inputs:
+- path: input/left.csv
+  sha256: 4b5ba2ce140109bc4711af09f0da46e7c2bfa88bc96995e39fa2ea7c581aefaa
+- path: input/right.csv
+  sha256: 6b111d0a6514aacf566f5ffa24d43025a3478e1d4f20d1c1f5fd699e94994d50
+outputs:
+- path: discrepancies.csv
+  kind: csv
+  columns:
+  - order_id
+  - issue
+  - left_amount
+  - right_amount
+fixture_driver: reconcile_orders

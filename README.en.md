@@ -21,8 +21,25 @@
 
 </div>
 
-> **Project status · Early development**
-> This README describes the product design and intended capabilities. Implementations, integration examples, and usage documentation will evolve with the project.
+> **Project status · Runnable M1 no-model workflow**
+> Two synthetic tasks and two deterministic mock systems now execute through Inspect, receive independent scores, and produce traceable reports. No real models or BB services are called. The broader architecture below remains a design target; cancellation/recovery, budget admission and production isolation are not implemented.
+
+## Quick start (no real model calls)
+
+Requires Python 3.12 and uv. Run from the repository root:
+
+```bash
+uv sync --locked --group dev
+uv run agent-eval validate experiments/smoke-mock.yaml
+uv run agent-eval dry-run experiments/smoke-mock.yaml
+uv run agent-eval run experiments/smoke-mock.yaml
+```
+
+Expected: four completed runs; `mock-pass` passes both tasks, `mock-wrong-answer` fails both, and real model requests/tokens are zero. The CLI prints the report path. This validates engineering, not real Agent capability.
+
+- [M1 usage and limitations (Chinese)](<docs/quickstart.md>)
+- [Inspect compatibility results (Chinese)](<docs/compatibility/inspect-m0.md>)
+- [Detailed development plan (Chinese)](<docs/development-plan.md>)
 
 ---
 

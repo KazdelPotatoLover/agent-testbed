@@ -1,0 +1,6 @@
+schema_version: '1'
+suite_id: smoke-m1
+revision: '1'
+tasks:
+- tasks/T001/task.yaml
+- tasks/T003/task.yaml

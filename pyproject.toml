@@ -1,0 +1,58 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agent-testbed"
+version = "0.1.0a1"
+description = "Reproducible, independently scored agent-system evaluations"
+readme = "README.en.md"
+requires-python = ">=3.12,<3.13"
+license = "Apache-2.0"
+dependencies = [
+  "inspect-ai==0.3.290",
+  "pydantic>=2.11,<3",
+  "PyYAML>=6.0,<7",
+  "typer>=0.16,<1",
+  "jsonschema>=4.23,<5",
+]
+
+[project.scripts]
+agent-eval = "agent_testbed.cli:app"
+
+[dependency-groups]
+dev = [
+  "pytest>=8.3,<10",
+  "pytest-socket>=0.7,<1",
+  "ruff>=0.12,<1",
+  "mypy>=1.16,<2",
+  "types-PyYAML>=6.0",
+  "types-jsonschema>=4.23",
+  "openai>=3.4,<4",
+]
+
+[tool.hatch.build]
+exclude = ["/.tools", "/.venv", "/output", "/dist", "/.git", "/.pytest_cache", "/.mypy_cache", "/.ruff_cache"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/agent_testbed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --disable-socket --allow-unix-socket"
+markers = [
+  "requires_docker: needs an explicitly available Docker daemon",
+  "paid: requires separate authorization; excluded from the offline workflow",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["src/agent_testbed"]

@@ -1,0 +1,5 @@
+order_id,issue,left_amount,right_amount
+A002,amount_mismatch,200.00,210.00
+A003,missing_right,300.00,
+A004,missing_left,,400.00
+A005,duplicate,50.00,50.00

@@ -1,0 +1,19 @@
+# Local toolchain and environments
+.venv/
+.tools/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+build/
+dist/
+
+# Runtime data and secrets
+output/
+.env
+.env.*
+!.env.example
