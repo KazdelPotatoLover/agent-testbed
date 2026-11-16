@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="760" viewBox="0 0 1120 760" role="img" aria-labelledby="title desc">
+<title id="title">Agent Testbed architecture</title>
+<desc id="desc">Tasks, system configurations, and budgets enter a controller. Python, CLI, and HTTP adapters connect the system under test. Snapshots are independently graded and linked to reports. Private grading materials only enter the grading stage; metering and budget control span controlled execution.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#64748b" /></marker><marker id="private-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#7c3aed" /></marker></defs>
+<rect x="0.5" y="0.5" width="1119" height="759" rx="18" fill="#f8fafc" stroke="#dbe3ee" />
+<g font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Noto Sans CJK SC, Microsoft YaHei, Arial, sans-serif">
+<text x="40" y="35" fill="#64748b" font-size="11" font-weight="600" text-anchor="start">ARCHITECTURE / DESIGN OVERVIEW</text>
+<rect x="40" y="64" width="220" height="68" rx="12" fill="#ffffff" stroke="#cbd5e1" />
+<text x="150" y="92" fill="#0f172a" font-size="17" font-weight="600" text-anchor="middle">Task packages</text>
+<text x="150" y="115" fill="#64748b" font-size="12" font-weight="400" text-anchor="middle">TaskSpec</text>
+<rect x="280" y="64" width="220" height="68" rx="12" fill="#ffffff" stroke="#cbd5e1" />
+<text x="390" y="92" fill="#0f172a" font-size="17" font-weight="600" text-anchor="middle">System configurations</text>
+<text x="390" y="115" fill="#64748b" font-size="12" font-weight="400" text-anchor="middle">SystemSpec</text>
+<rect x="520" y="64" width="220" height="68" rx="12" fill="#ffffff" stroke="#cbd5e1" />
+<text x="630" y="92" fill="#0f172a" font-size="17" font-weight="600" text-anchor="middle">Conditions &amp; budgets</text>
+<text x="630" y="115" fill="#64748b" font-size="12" font-weight="400" text-anchor="middle">RunConfig</text>
+<path d="M150 132V152H390" fill="none" stroke="#64748b" stroke-width="1.6" stroke-linejoin="round" />
+<path d="M630 132V152H390" fill="none" stroke="#64748b" stroke-width="1.6" stroke-linejoin="round" />
+<path d="M390 132V172" fill="none" stroke="#64748b" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow)" />
+<rect x="40" y="172" width="700" height="76" rx="12" fill="#13233b" stroke="#13233b" />
+<text x="390" y="203" fill="#f8fafc" font-size="23" font-weight="650" text-anchor="middle">Evaluation controller</text>
+<text x="390" y="228" fill="#bfdbfe" font-size="15" font-weight="400" text-anchor="middle">Run matrix · Isolation · Timeouts · Persistence &amp; recovery</text>
+<path d="M390 248V268H150V288" fill="none" stroke="#64748b" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow)" />
+<path d="M390 268H630V288" fill="none" stroke="#64748b" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow)" />
+<path d="M390 268V288" fill="none" stroke="#64748b" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow)" />
+<rect x="40" y="288" width="220" height="60" rx="12" fill="#eff6ff" stroke="#bfdbfe" />
+<text x="150" y="324" fill="#1e40af" font-size="18" font-weight="600" text-anchor="middle">Python adapter</text>
+<rect x="280" y="288" width="220" height="60" rx="12" fill="#eff6ff" stroke="#bfdbfe" />
+<text x="390" y="324" fill="#1e40af" font-size="18" font-weight="600" text-anchor="middle">CLI adapter</text>
+<rect x="520" y="288" width="220" height="60" rx="12" fill="#eff6ff" stroke="#bfdbfe" />
+<text x="630" y="324" fill="#1e40af" font-size="18" font-weight="600" text-anchor="middle">HTTP adapter</text>
+<path d="M150 348V370H390" fill="none" stroke="#64748b" stroke-width="1.6" stroke-linejoin="round" />
+<path d="M630 348V370H390" fill="none" stroke="#64748b" stroke-width="1.6" stroke-linejoin="round" />
+<path d="M390 348V392" fill="none" stroke="#64748b" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow)" />
+<rect x="40" y="392" width="700" height="74" rx="12" fill="#ecfdf5" stroke="#99d6c4" />
+<text x="390" y="423" fill="#065f46" font-size="23" font-weight="650" text-anchor="middle">Agent system under test</text>
+<text x="390" y="447" fill="#047857" font-size="15" font-weight="400" text-anchor="middle">Single-agent / Planner–worker / Shared-memory / Multi-agent</text>
+<path d="M390 466V502" fill="none" stroke="#64748b" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow)" />
+<rect x="40" y="502" width="700" height="66" rx="12" fill="#ffffff" stroke="#cbd5e1" />
+<text x="390" y="529" fill="#0f172a" font-size="19" font-weight="600" text-anchor="middle">Results &amp; artifact snapshots</text>
+<text x="390" y="552" fill="#475569" font-size="14" font-weight="400" text-anchor="middle">Answers · Files · State · Traces · Usage</text>
+<path d="M390 568V590H205V612" fill="none" stroke="#64748b" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow)" />
+<rect x="40" y="612" width="330" height="70" rx="12" fill="#f5f3ff" stroke="#c4b5fd" />
+<text x="205" y="641" fill="#5b21b6" font-size="21" font-weight="650" text-anchor="middle">Independent grading</text>
+<text x="205" y="665" fill="#6d28d9" font-size="14" font-weight="400" text-anchor="middle">Rules / Tests / Rubrics</text>
+<path d="M370 647H410" fill="none" stroke="#64748b" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow)" />
+<rect x="410" y="612" width="330" height="70" rx="12" fill="#ecfeff" stroke="#a5d7dd" />
+<text x="575" y="641" fill="#155e75" font-size="21" font-weight="650" text-anchor="middle">Comparison reports</text>
+<text x="575" y="665" fill="#0e7490" font-size="13" font-weight="400" text-anchor="middle">Quality / Cost / Latency / Reliability</text>
+<rect x="800" y="172" width="280" height="176" rx="12" fill="#fffbeb" stroke="#ead7a0" />
+<text x="820" y="198" fill="#a16207" font-size="10" font-weight="650" text-anchor="start">RUN GOVERNANCE</text>
+<text x="820" y="229" fill="#854d0e" font-size="20" font-weight="650" text-anchor="start">Metering &amp; budgets</text>
+<text x="820" y="258" fill="#854d0e" font-size="14" font-weight="400" text-anchor="start">Run attribution with run_id</text>
+<text x="820" y="281" fill="#854d0e" font-size="14" font-weight="400" text-anchor="start">Reserve, then reconcile</text>
+<text x="820" y="304" fill="#854d0e" font-size="14" font-weight="400" text-anchor="start">Track in-flight calls &amp; cleanup</text>
+<text x="820" y="331" fill="#854d0e" font-size="11" font-weight="500" text-anchor="start">Controlled integrations</text>
+<path d="M800 210H740" fill="none" stroke="#a16207" stroke-width="1.6" stroke-linejoin="round" stroke-dasharray="5 5" marker-end="url(#arrow)" />
+<path d="M800 320H772V429H740" fill="none" stroke="#a16207" stroke-width="1.6" stroke-linejoin="round" stroke-dasharray="5 5" marker-end="url(#arrow)" />
+<rect x="800" y="502" width="280" height="180" rx="12" fill="#f5f3ff" stroke="#d5c6f3" />
+<text x="820" y="528" fill="#7c3aed" font-size="10" font-weight="650" text-anchor="start">GRADINGSPEC / PRIVATE</text>
+<text x="820" y="561" fill="#5b21b6" font-size="17" font-weight="650" text-anchor="start">Private grading materials</text>
+<text x="820" y="591" fill="#5b21b6" font-size="14" font-weight="400" text-anchor="start">Reference answers &amp; tests</text>
+<text x="820" y="615" fill="#5b21b6" font-size="14" font-weight="400" text-anchor="start">Grading rules &amp; versions</text>
+<text x="820" y="654" fill="#5b21b6" font-size="12" font-weight="500" text-anchor="start">Available only to graders</text>
+<path d="M940 682V707H205V682" fill="none" stroke="#7c3aed" stroke-width="1.6" stroke-linejoin="round" stroke-dasharray="5 5" marker-end="url(#private-arrow)" />
+<text x="40" y="742" fill="#64748b" font-size="11" font-weight="500" text-anchor="start">PRODUCT DESIGN · Results linked to configurations, traces, and grading evidence</text>
+</g>
+</svg>

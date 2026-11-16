@@ -1,164 +1,247 @@
-# Agent Testbed
+<div align="center">
 
-**Compare agent architectures on quality, cost, latency, and reliability—with the same experimental framework.**
+<img src="docs/assets/banner.svg" alt="Agent Testbed — Compare architectures. Follow the evidence." width="100%" />
 
-[简体中文](<README.md>) | **English**
+### A unified evaluation framework for agent architectures
 
-Agent Testbed is a unified evaluation framework for agent systems. It is designed to evaluate single-agent, planner–worker, shared-memory, blackboard-based, and autonomous multi-agent architectures under consistent tasks, tool capabilities, and resource constraints.
+**The same tasks. The same budget. Architecture choices grounded in real outcomes.**
 
-It brings task execution, resource accounting, independent grading, and result analysis into one traceable workflow, helping researchers and engineering teams answer a practical question: **Which agent architecture works best for which tasks, and at what cost?**
+<img src="docs/assets/badges.svg" alt="Status: Early development · License: Apache-2.0 · Docs: ZH / EN" width="520" />
 
-> **Project status: early development.** This README describes the product design and intended capabilities. Implementations, integration examples, and usage documentation will be added as development progresses.
+<p><a href="README.md">简体中文</a> · <strong>English</strong></p>
 
-## Why Agent Testbed?
+<p>
+  <a href="#overview">Overview</a> ·
+  <a href="#features">Features</a> ·
+  <a href="#architecture">Architecture</a> ·
+  <a href="#workflow">Workflow</a> ·
+  <a href="#metrics">Metrics</a> ·
+  <a href="#contributing">Contributing</a>
+</p>
 
-The value of an agent architecture lies in what it delivers on real tasks. Additional collaborators, shared memory, and verification stages can improve quality, while also introducing more model calls, longer waits, and more complex failure paths.
+</div>
 
-Agent Testbed organizes experiments around these trade-offs:
+> **Project status · Early development**
+> This README describes the product design and intended capabilities. Implementations, integration examples, and usage documentation will evolve with the project.
 
-- **Architecture selection**: compare single agents, centralized delegation, and autonomous collaboration on the same task suite.
-- **Mechanism evaluation**: use ablation studies to investigate the contribution of shared memory, independent verification, and scheduling strategies.
-- **Regression tracking**: measure how model, prompt, and implementation changes affect quality and resource consumption.
-- **Task acceptance**: verify completion through structured answers, delivered files, and observable environment state.
-- **Reliability analysis**: examine behavior during timeouts, cancellation, service failures, and recovery.
+---
 
-## Core Capabilities
+<a id="overview"></a>
 
-| Capability | Design and value |
-| --- | --- |
-| **Unified system integration** | Connect implementations through Python, CLI, and HTTP adapters while preserving each system's own planning and collaboration logic. |
-| **Configuration-driven experiments** | Combine task suites, system configurations, repetitions, and budgets into a run matrix, with versions and conditions recorded for each experiment. |
-| **Independent outcome grading** | Evaluate answers, files, and environment changes with rules, hidden tests, rubrics, model-based review, or human review. |
-| **Usage and budget management** | Account for model calls across the entire system, track tokens, costs, and usage completeness, and check budgets before calls in controlled integrations. |
-| **Isolation and recovery** | Manage separate workspaces, memory boundaries, timeouts, cancellation, and cleanup; persist state and resume unfinished experiments. |
-| **Traceable reporting** | Compare quality, cost, latency, and failure causes, with findings linked to configurations, raw traces, and delivered artifacts. |
+## 📖 Overview
 
-## How It Works
+**Agent Testbed** is a unified evaluation framework for agent systems. It is designed to evaluate single-agent, planner–worker, shared-memory, blackboard-based, and autonomous multi-agent architectures under consistent tasks, tool capabilities, and resource constraints.
 
-The design combines an **established evaluation backend, a thin control layer, and pluggable adapters**. The backend provides execution, grading, and logging foundations; the control layer manages experimental conditions and run lifecycles; adapters connect individual agent systems.
+From **task execution → resource accounting → independent grading → comparison reports**, Agent Testbed connects the experiment into a traceable chain of evidence, helping researchers and engineering teams answer:
 
-```text
-Task packages + System configurations + Budgets
-                       |
-                       v
-              Evaluation controller
-         Run matrix / Isolation / Timeouts / Recovery
-                       |
-            +----------+----------+
-            v          v          v
-          Python      CLI        HTTP
-            +----------+----------+
-                       v
-              Agent system under test
-               Single- or multi-agent
-                       |
-                       v
-        Answers / Files / State snapshots / Traces
-                       |
-                       v
-                Independent graders
-                       |
-                       v
-          Comparison reports and evidence index
+> **Which agent architecture works best for which tasks, and at what cost?**
 
-Usage metering and budget control span execution
-```
+Additional collaborators, shared memory, and verification stages can improve quality while introducing more calls, waiting time, and failure paths. Agent Testbed makes these trade-offs observable within the same experimental framework.
 
-### 1. Evaluate the Whole System
+| Your question | The evaluation approach |
+| :--- | :--- |
+| **Which architecture should we choose?** | Compare single agents, centralized delegation, and autonomous collaboration on the same tasks and resource conditions. |
+| **Which mechanisms make a difference?** | Use ablation studies to investigate shared memory, independent verification, and scheduling strategies. |
+| **Is the new version actually better?** | Track quality, cost, and latency changes across models, prompts, and implementations. |
+| **Was the task really completed?** | Independently verify structured answers, delivered files, and observable environment state. |
+| **Can long-running tasks finish reliably?** | Examine timeouts, cancellation, service failures, recovery, and resource cleanup. |
 
-One run represents one task, one system configuration, and one repetition. Model calls from planners, workers, verifiers, and context summarization all belong to the same run identity and budget.
+---
 
-This gives single-agent and multi-agent systems a consistent unit of comparison while retaining opportunities to analyze their internal collaboration.
+<a id="features"></a>
 
-### 2. Separate Tasks from Grading Criteria
+## ✨ Core Features
 
-A task package describes the problem, input materials, deliverables, and environment requirements. Reference answers, hidden tests, and grading rules are managed separately on the evaluation side.
+<table>
+<tr>
+<td width="50%" valign="top">
+<h3>🔌 Multiple architectures, one protocol</h3>
+<p>Connect systems through <strong>Python / CLI / HTTP</strong> adapters while preserving their planning, tool loops, and collaboration logic.</p>
+<p>Evaluate single-agent and multi-agent systems as complete units.</p>
+</td>
+<td width="50%" valign="top">
+<h3>🧪 Configuration-driven comparisons</h3>
+<p>Expand <strong>task suites × system configurations × repetitions</strong> into an experiment matrix, recording models, versions, tool permissions, and resources.</p>
+<p>Reuse the workflow for architecture selection, ablations, and regression tracking.</p>
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+<h3>🎯 Independent outcome grading</h3>
+<p>Combine deterministic rules, hidden tests, rubrics, model-based review, and human review to evaluate answers, files, and environment changes.</p>
+<p>Record <strong>execution completion, self-reported success, and external acceptance</strong> separately.</p>
+</td>
+<td width="50%" valign="top">
+<h3>⚖️ Whole-system cost accounting</h3>
+<p>Attribute calls from planners, workers, verifiers, and internal retries to the same run. Track tokens, cost, and usage completeness.</p>
+<p>Controlled integrations <strong>reserve budget before calls and reconcile actual usage afterward</strong>.</p>
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+<h3>🛡️ Isolated execution and recovery</h3>
+<p>Manage workspaces, memory boundaries, timeouts, cancellation, and cleanup, with process, container, or dedicated-service environments selected per task.</p>
+<p>Resume unfinished experiments through persisted state and idempotent starts.</p>
+</td>
+<td width="50%" valign="top">
+<h3>📊 From summary to evidence</h3>
+<p>Compare success rates, quality, cost, duration, and failure causes, retaining per-task results and variation across repetitions.</p>
+<p>Link reports to <strong>configurations, raw traces, and artifact snapshots</strong>, with offline regrading.</p>
+</td>
+</tr>
+</table>
 
-Deterministic tests and rules form the basis of grading, supplemented by rubrics, model-based review, or human review for open-ended quality dimensions. Once outputs are saved as snapshots, versioned graders can rescore them using the existing execution results.
+---
 
-### 3. Separate Execution Status from Task Success
+<a id="architecture"></a>
 
-Run records distinguish four outcomes:
+## 🏗️ Architecture
 
-- **Execution status**: normal completion, timeout, budget exhaustion, or system error.
-- **Self-reported status**: whether the system claims to have completed the task or passed its own checks.
-- **External grade**: whether the result meets independent acceptance criteria, together with its quality scores.
-- **Cleanup status**: whether child tasks and remote resources are confirmed stopped or released.
+The design combines an **established evaluation backend, a thin control layer, and pluggable adapters**. The backend provides execution, grading, and logging foundations; the control layer organizes experimental conditions and run lifecycles; adapters connect individual agent systems.
 
-This makes cases such as “completed normally with an incorrect answer” and “self-reported success with a failing external grade” explicit.
+![Agent Testbed architecture: experiment inputs flow through the controller and adapters to the system under test; artifact snapshots are independently graded and linked to traceable reports.](<docs/assets/architecture.en.svg>)
 
-### 4. Match Comparisons to Observability
+### 🤖 One System, One Run Budget
 
-| Integration level | Evaluation and accounting approach |
-| --- | --- |
-| **Black-box integration** | Submit tasks, detect completion, and collect outputs to evaluate delivery quality and end-to-end latency. Label self-reported usage with its source and completeness. |
-| **Controlled integration** | Attribute every model call to a run, verify models, permissions, and budgets, and validate isolation and cancellation paths for resource-constrained architecture comparisons. |
+One run represents **one task × one system configuration × one repetition**. Planning, execution, verification, context summarization, and retry calls all belong to the same run identity and budget. This gives single-agent and multi-agent systems a consistent unit of comparison.
 
-Strict-budget experiments rely on admission control before model calls: reserve capacity for concurrent requests, reconcile actual usage, and continue accounting for calls still in flight during cancellation. Reports distinguish measured, estimated, and missing data, as well as results from different integration levels.
+### 🔍 Public Tasks, Independent Grading
 
-## Evaluation Tasks
+Task packages provide problems, input materials, deliverables, and environment requirements. Reference answers, hidden tests, and grading credentials stay on the evaluation side. Deterministic tests take priority, supplemented by rubrics, model-based review, or human review for open-ended quality dimensions.
 
-| Task type | Typical deliverables | Grading basis |
-| --- | --- | --- |
-| **Question answering and research** | Structured answers, research findings, source citations | Reference answers, factual coverage, citation and source checks |
-| **File-based delivery** | Documents, spreadsheets, analytical reports | File structure, content rules, completeness, and quality rubrics |
-| **Environment interaction** | Code changes, terminal tasks, observable state changes | Hidden tests, state assertions, and regression checks |
+Once outputs are saved as snapshots, different grader versions can evaluate them again, reusing existing execution results and preserving historical grades.
 
-Task packages and architecture adapters evolve independently. The same suite can evaluate multiple systems, and the same system can be evaluated on different business tasks and public benchmarks. Task data versions, licensing information, and grader versions are recorded with the experiment.
+### 🚦 Execution Status and Task Success, Recorded Separately
 
-## Experiments and Metrics
+| Recorded dimension | What it captures |
+| :--- | :--- |
+| **Execution status** | Normal completion, timeout, budget exhaustion, or error |
+| **Self-reported status** | Claims of task completion or passing internal checks |
+| **External grade** | Independent acceptance and quality scores |
+| **Resource status** | Confirmation that child tasks and remote resources have stopped or been released |
 
-An experiment follows this structure:
+“Completed normally with an incorrect answer” and “self-reported success with a failing external grade” remain explicit, analyzable outcomes.
 
-```text
-Task suite × System configurations × Repetitions
-                       ↓
-           Run records → Independent grades → Comparison reports
-```
+### ⚖️ Comparisons Matched to Observability
 
-Experiments fix or record model versions, tool permissions, budgets, environment resources, and memory and caching policies. Sample-level concurrency is tracked separately from concurrency within a system. Whole-system comparisons support architecture selection; ablation studies investigate individual mechanisms.
+| Integration level | Evaluation approach |
+| :--- | :--- |
+| **Black-box** | Submit tasks, detect completion, and collect results to assess quality and end-to-end latency. Label self-reported usage with its source and completeness. |
+| **Controlled** | Attribute all model calls to a run; verify models, permissions, and budgets; validate isolation and cancellation paths for resource-constrained comparisons. |
 
-| Dimension | Key metrics |
-| --- | --- |
-| **Quality** | External success rate, task-specific quality scores, agreement between self-reported and independently verified success |
-| **Cost** | Input and output tokens, cached usage, monetary cost, cost per successful run |
-| **Latency** | End-to-end duration, with separate timings for preparation, queuing, execution, collection, and grading |
-| **Reliability** | Timeout rate, budget-exhaustion rate, infrastructure error rate, recovery behavior, and cleanup completeness |
-| **Interpretability** | Per-task results, variation across repetitions, failure causes, data gaps, and supporting evidence |
+Strict-budget experiments apply admission control before model calls: reserve capacity for concurrent requests, reconcile actual usage, and keep accounting for calls still in flight during cancellation. Reports distinguish **measured, estimated, and missing data**, with results presented separately by integration level.
 
-Statistics cover successful and failed runs, including the cost of internal retries. Cost per successful run is total execution cost divided by externally verified successes; it is marked unavailable when there are no successes. External grading and evaluation-control overhead are accounted for separately and included in total experiment expenditure.
+---
 
-Analysis uses task-level paired comparisons, variation across repetitions, and confidence intervals to communicate differences. The reporting design includes Markdown, static HTML, and JSON/CSV exports, linking aggregate findings back to individual run configurations, traces, and artifacts.
+<a id="workflow"></a>
 
-## Extensible by Design
+## 🔄 Experiment Workflow
 
-The core contracts separate tasks, systems, execution, and grading:
+**Define tasks → Connect systems → Fix conditions → Execute → Grade independently → Compare**
+
+| Step | What happens | Evidence retained |
+| :---: | :--- | :--- |
+| **01 · Define** | Prepare input materials, deliverables, and independent grading criteria | Task versions, material snapshots, grading rules |
+| **02 · Connect** | Declare adapter capabilities and link model and code configurations | System identities, configurations, integration levels |
+| **03 · Configure** | Set repetitions, tool permissions, budgets, environments, and concurrency | Reviewable experiment configurations and run matrix |
+| **04 · Execute** | Run in isolation; record calls, state, cancellation, and cleanup | Raw traces, usage records, artifact snapshots |
+| **05 · Grade** | Check answers, files, and environment state; save versioned grades | Acceptance results, quality scores, grading evidence |
+| **06 · Compare** | Analyze per-task differences, variation, and failure causes | Markdown / static HTML reports, JSON / CSV data |
+
+Experiments record memory and caching policies and distinguish **sample-level concurrency** from **concurrency within a system**. Whole-system comparisons support architecture selection; ablation studies investigate individual mechanisms.
+
+---
+
+<a id="tasks"></a>
+
+## 🗂️ Evaluation Tasks
+
+| Task type | Typical deliverables | Acceptance criteria |
+| :--- | :--- | :--- |
+| **🔎 Question Answering & Research** | Structured answers, findings, source citations | Reference answers, factual coverage, citation and source checks |
+| **📄 File-based Delivery** | Documents, spreadsheets, analytical reports | File structure, content rules, completeness, quality rubrics |
+| **💻 Environment Interaction** | Code changes, terminal tasks, observable state changes | Hidden tests, state assertions, regression checks |
+
+**Task packages and architecture adapters evolve independently.** The same suite can evaluate multiple systems; the same system can be evaluated on business tasks and public benchmarks. Data versions, licensing information, and grader versions stay with the experiment.
+
+---
+
+<a id="metrics"></a>
+
+## 📈 Evaluation Metrics
+
+Explore architecture trade-offs across four core dimensions, supported by per-task evidence.
+
+| Dimension | Core metrics | The question it answers |
+| :--- | :--- | :--- |
+| **🎯 Quality** | External success rate, task-specific scores, agreement between self-reported and external acceptance | How well was the task completed? |
+| **💰 Cost** | Input / output tokens, cached usage, monetary cost, cost per successful run | What does a useful result cost? |
+| **⏱️ Latency** | End-to-end duration; preparation / queue / execution / collection / grading timings | Where is time spent? |
+| **🛡️ Reliability** | Timeout, budget-exhaustion, and infrastructure error rates; recovery and cleanup | Can the system finish safely when something goes wrong? |
+
+> **Every finding has an evidence trail.** Reports link per-task results, variation across repetitions, failure causes, and data gaps back to individual runs.
+
+<details>
+<summary><strong>View statistical and cost accounting conventions</strong></summary>
+
+- Statistics cover successful and failed runs, retaining all consumption from internal retries.
+- Cost per successful run = total execution cost ÷ externally verified successes; it is marked unavailable when there are no successes.
+- External grading and control-layer overhead are accounted for separately and included in total experiment expenditure.
+- Analysis uses task-level paired comparisons, variation across repetitions, and confidence intervals.
+- Models, budgets, resources, integration levels, and data completeness are disclosed alongside the results.
+
+</details>
+
+---
+
+<a id="extensibility"></a>
+
+## 🧩 Extensible by Design
+
+**Add an adapter for a new architecture, a task package for a new task, and a grader for a new acceptance method.**
+
+Core contracts separate tasks, systems, execution, and grading. The evaluation core maintains a consistent experimental workflow and accounting model.
+
+<details>
+<summary><strong>View core contracts and the adapter lifecycle</strong></summary>
 
 | Object | Responsibility |
-| --- | --- |
+| :--- | :--- |
 | `TaskSpec` | Agent-visible problem, materials, deliverables, and environment requirements |
 | `GradingSpec` | Evaluation-side reference answers, hidden tests, rules, and grader versions |
-| `SystemSpec` | Architecture identity, adapter, model and prompt configuration, code version, and declared capabilities |
+| `SystemSpec` | Architecture identity, adapter, model and prompt configuration, code version, and capabilities |
 | `RunConfig` | Per-run budget, timeout, resources, and repetition identifier |
-| `RunResult` | Execution status, answer, artifacts, trace references, usage, and self-reported status |
-| `ScoreResult` | Acceptance results, quality scores, and evidence produced by independent graders |
+| `RunResult` | Execution status, answer, artifacts, traces, usage, and self-reported status |
+| `ScoreResult` | Acceptance results, quality scores, and evidence from independent graders |
 
-Adapters declare observability and control through `capabilities`, and manage the run lifecycle through `start`, `poll`, `cancel`, `collect`, and `cleanup`. Stable run identities and idempotent start protocols support state reconciliation and recovery after interruptions.
+Adapters declare observability and control through `capabilities` and manage the run lifecycle through `start`, `poll`, `cancel`, `collect`, and `cleanup`.
 
-Extensions follow three boundaries: **add an adapter for a new architecture, a task package for a new task, and a grader for a new acceptance method**. The evaluation core maintains a consistent experimental workflow and accounting model.
+Stable run identities and idempotent starts support state reconciliation and recovery after interruptions. Cancellation requests, actual termination, and cleanup are confirmed separately; partial artifacts can also be collected after failure or cancellation.
 
-## Contributing
+</details>
 
-Contributions are welcome across:
+---
 
-- Agent system adapters and minimal integration examples.
-- Reproducible task packages, deterministic tests, and quality rubrics.
-- Usage metering, budget control, and isolated environments.
-- Tests for timeouts, cancellation, recovery, and resource cleanup.
-- Comparison reports, trace analysis, and Chinese and English documentation.
+<a id="contributing"></a>
 
-Please include source, version, and licensing information with task packages or datasets. Tasks involving sensitive materials can demonstrate integration through sanitized examples.
+## 🤝 Contributing
 
-## License
+Help build agent evaluation around real deliverables:
+
+- **System integrations**: agent adapters and minimal integration examples.
+- **Tasks and graders**: reproducible packages, deterministic tests, and quality rubrics.
+- **Execution reliability**: usage metering, budget control, isolation, and recovery tests.
+- **Analysis and documentation**: comparison reports, trace analysis, and Chinese and English guides.
+
+Please include source, version, and licensing information with tasks or datasets. Use sanitized examples to demonstrate integrations involving sensitive materials.
+
+## 📄 License
 
 This project is licensed under the [Apache License 2.0](<LICENSE>). Third-party task suites, datasets, and dependencies retain their respective licenses.
+
+---
+
+<div align="center">
+<strong>Compare architectures. Follow the evidence.</strong><br />
+<sub>Make architecture choices with experimental evidence.</sub>
+</div>

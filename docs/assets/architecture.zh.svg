@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="760" viewBox="0 0 1120 760" role="img" aria-labelledby="title desc">
+<title id="title">Agent Testbed 系统架构</title>
+<desc id="desc">任务、系统配置与预算由控制器组织，经 Python、CLI、HTTP 适配器连接被测系统。结果快照交由独立评分器验收，形成可追溯报告。私有评分资料仅进入评分环节，受控接入的计量与预算贯穿执行。</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#64748b" /></marker><marker id="private-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#7c3aed" /></marker></defs>
+<rect x="0.5" y="0.5" width="1119" height="759" rx="18" fill="#f8fafc" stroke="#dbe3ee" />
+<g font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Noto Sans CJK SC, Microsoft YaHei, Arial, sans-serif">
+<text x="40" y="35" fill="#64748b" font-size="11" font-weight="600" text-anchor="start">ARCHITECTURE / DESIGN OVERVIEW</text>
+<rect x="40" y="64" width="220" height="68" rx="12" fill="#ffffff" stroke="#cbd5e1" />
+<text x="150" y="92" fill="#0f172a" font-size="17" font-weight="600" text-anchor="middle">任务包</text>
+<text x="150" y="115" fill="#64748b" font-size="12" font-weight="400" text-anchor="middle">TaskSpec</text>
+<rect x="280" y="64" width="220" height="68" rx="12" fill="#ffffff" stroke="#cbd5e1" />
+<text x="390" y="92" fill="#0f172a" font-size="17" font-weight="600" text-anchor="middle">系统配置</text>
+<text x="390" y="115" fill="#64748b" font-size="12" font-weight="400" text-anchor="middle">SystemSpec</text>
+<rect x="520" y="64" width="220" height="68" rx="12" fill="#ffffff" stroke="#cbd5e1" />
+<text x="630" y="92" fill="#0f172a" font-size="17" font-weight="600" text-anchor="middle">运行条件与预算</text>
+<text x="630" y="115" fill="#64748b" font-size="12" font-weight="400" text-anchor="middle">RunConfig</text>
+<path d="M150 132V152H390" fill="none" stroke="#64748b" stroke-width="1.6" stroke-linejoin="round" />
+<path d="M630 132V152H390" fill="none" stroke="#64748b" stroke-width="1.6" stroke-linejoin="round" />
+<path d="M390 132V172" fill="none" stroke="#64748b" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow)" />
+<rect x="40" y="172" width="700" height="76" rx="12" fill="#13233b" stroke="#13233b" />
+<text x="390" y="203" fill="#f8fafc" font-size="23" font-weight="650" text-anchor="middle">评测控制器</text>
+<text x="390" y="228" fill="#bfdbfe" font-size="15" font-weight="400" text-anchor="middle">运行矩阵  ·  隔离  ·  超时  ·  状态持久化与恢复</text>
+<path d="M390 248V268H150V288" fill="none" stroke="#64748b" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow)" />
+<path d="M390 268H630V288" fill="none" stroke="#64748b" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow)" />
+<path d="M390 268V288" fill="none" stroke="#64748b" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow)" />
+<rect x="40" y="288" width="220" height="60" rx="12" fill="#eff6ff" stroke="#bfdbfe" />
+<text x="150" y="324" fill="#1e40af" font-size="18" font-weight="600" text-anchor="middle">Python 适配器</text>
+<rect x="280" y="288" width="220" height="60" rx="12" fill="#eff6ff" stroke="#bfdbfe" />
+<text x="390" y="324" fill="#1e40af" font-size="18" font-weight="600" text-anchor="middle">CLI 适配器</text>
+<rect x="520" y="288" width="220" height="60" rx="12" fill="#eff6ff" stroke="#bfdbfe" />
+<text x="630" y="324" fill="#1e40af" font-size="18" font-weight="600" text-anchor="middle">HTTP 适配器</text>
+<path d="M150 348V370H390" fill="none" stroke="#64748b" stroke-width="1.6" stroke-linejoin="round" />
+<path d="M630 348V370H390" fill="none" stroke="#64748b" stroke-width="1.6" stroke-linejoin="round" />
+<path d="M390 348V392" fill="none" stroke="#64748b" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow)" />
+<rect x="40" y="392" width="700" height="74" rx="12" fill="#ecfdf5" stroke="#99d6c4" />
+<text x="390" y="423" fill="#065f46" font-size="23" font-weight="650" text-anchor="middle">被测 Agent 系统</text>
+<text x="390" y="447" fill="#047857" font-size="15" font-weight="400" text-anchor="middle">单 Agent / planner–worker / 共享记忆 / 自主多 Agent</text>
+<path d="M390 466V502" fill="none" stroke="#64748b" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow)" />
+<rect x="40" y="502" width="700" height="66" rx="12" fill="#ffffff" stroke="#cbd5e1" />
+<text x="390" y="529" fill="#0f172a" font-size="19" font-weight="600" text-anchor="middle">结果与产物快照</text>
+<text x="390" y="552" fill="#475569" font-size="14" font-weight="400" text-anchor="middle">回答  ·  文件  ·  环境状态  ·  轨迹  ·  用量</text>
+<path d="M390 568V590H205V612" fill="none" stroke="#64748b" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow)" />
+<rect x="40" y="612" width="330" height="70" rx="12" fill="#f5f3ff" stroke="#c4b5fd" />
+<text x="205" y="641" fill="#5b21b6" font-size="21" font-weight="650" text-anchor="middle">独立评分</text>
+<text x="205" y="665" fill="#6d28d9" font-size="14" font-weight="400" text-anchor="middle">规则 / 隐藏测试 / 质量量表</text>
+<path d="M370 647H410" fill="none" stroke="#64748b" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow)" />
+<rect x="410" y="612" width="330" height="70" rx="12" fill="#ecfeff" stroke="#a5d7dd" />
+<text x="575" y="641" fill="#155e75" font-size="21" font-weight="650" text-anchor="middle">对比报告</text>
+<text x="575" y="665" fill="#0e7490" font-size="13" font-weight="400" text-anchor="middle">质量 / 成本 / 时延 / 可靠性</text>
+<rect x="800" y="172" width="280" height="176" rx="12" fill="#fffbeb" stroke="#ead7a0" />
+<text x="820" y="198" fill="#a16207" font-size="10" font-weight="650" text-anchor="start">RUN GOVERNANCE</text>
+<text x="820" y="229" fill="#854d0e" font-size="20" font-weight="650" text-anchor="start">计量与预算</text>
+<text x="820" y="258" fill="#854d0e" font-size="14" font-weight="400" text-anchor="start">统一运行标识 run_id</text>
+<text x="820" y="281" fill="#854d0e" font-size="14" font-weight="400" text-anchor="start">调用前预留 · 实际用量结算</text>
+<text x="820" y="304" fill="#854d0e" font-size="14" font-weight="400" text-anchor="start">在途调用追踪 · 取消与清理</text>
+<text x="820" y="331" fill="#854d0e" font-size="11" font-weight="500" text-anchor="start">受控接入下的执行控制</text>
+<path d="M800 210H740" fill="none" stroke="#a16207" stroke-width="1.6" stroke-linejoin="round" stroke-dasharray="5 5" marker-end="url(#arrow)" />
+<path d="M800 320H772V429H740" fill="none" stroke="#a16207" stroke-width="1.6" stroke-linejoin="round" stroke-dasharray="5 5" marker-end="url(#arrow)" />
+<rect x="800" y="502" width="280" height="180" rx="12" fill="#f5f3ff" stroke="#d5c6f3" />
+<text x="820" y="528" fill="#7c3aed" font-size="10" font-weight="650" text-anchor="start">GRADINGSPEC / PRIVATE</text>
+<text x="820" y="561" fill="#5b21b6" font-size="17" font-weight="650" text-anchor="start">评测侧私有资料</text>
+<text x="820" y="591" fill="#5b21b6" font-size="14" font-weight="400" text-anchor="start">标准答案与隐藏测试</text>
+<text x="820" y="615" fill="#5b21b6" font-size="14" font-weight="400" text-anchor="start">评分规则与版本</text>
+<text x="820" y="654" fill="#5b21b6" font-size="12" font-weight="500" text-anchor="start">仅供独立评分环节使用</text>
+<path d="M940 682V707H205V682" fill="none" stroke="#7c3aed" stroke-width="1.6" stroke-linejoin="round" stroke-dasharray="5 5" marker-end="url(#private-arrow)" />
+<text x="40" y="742" fill="#64748b" font-size="11" font-weight="500" text-anchor="start">产品架构设计 · 每份结果都关联配置、轨迹与评分证据</text>
+</g>
+</svg>

@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="360" viewBox="0 0 1280 360" role="img" aria-labelledby="title desc">
+  <title id="title">Agent Testbed</title>
+  <desc id="desc">Compare architectures. Follow the evidence. Quality, cost, latency, and reliability. Connected nodes represent different agent architectures evaluated within one framework.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#101b33" />
+      <stop offset="1" stop-color="#080d1b" />
+    </linearGradient>
+    <radialGradient id="glow">
+      <stop offset="0" stop-color="#2563eb" stop-opacity="0.2" />
+      <stop offset="1" stop-color="#2563eb" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#5eead4" />
+      <stop offset="1" stop-color="#60a5fa" />
+    </linearGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M32 0H0V32" fill="none" stroke="#a5b4fc" stroke-opacity="0.05" />
+    </pattern>
+  </defs>
+  <rect width="1280" height="360" rx="20" fill="url(#background)" />
+  <rect width="1280" height="360" rx="20" fill="url(#grid)" />
+  <ellipse cx="1030" cy="180" rx="250" ry="180" fill="url(#glow)" />
+  <rect x="64" y="53" width="32" height="4" rx="2" fill="url(#accent)" />
+  <g font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
+    <text x="111" y="59" fill="#8ba7c9" font-size="12" font-weight="700" letter-spacing="2.3">AGENT ARCHITECTURE EVALUATION</text>
+    <text x="60" y="143" fill="#f8fafc" font-size="76" font-weight="750" letter-spacing="-3">Agent Testbed</text>
+    <text x="64" y="192" fill="#d5e4f7" font-size="25">Compare architectures.</text>
+    <text x="64" y="226" fill="#5eead4" font-size="25">Follow the evidence.</text>
+    <g font-size="11" font-weight="700" letter-spacing="1.3" text-anchor="middle">
+      <rect x="64" y="276" width="104" height="30" rx="15" fill="#123039" stroke="#245455" />
+      <text x="116" y="295" fill="#99f6e4">QUALITY</text>
+      <rect x="180" y="276" width="83" height="30" rx="15" fill="#162d49" stroke="#284765" />
+      <text x="221.5" y="295" fill="#bfdbfe">COST</text>
+      <rect x="275" y="276" width="106" height="30" rx="15" fill="#27233f" stroke="#423961" />
+      <text x="328" y="295" fill="#ddd6fe">LATENCY</text>
+      <rect x="393" y="276" width="134" height="30" rx="15" fill="#302b24" stroke="#4b4233" />
+      <text x="460" y="295" fill="#fde68a">RELIABILITY</text>
+    </g>
+    <g fill="none" stroke-width="2">
+      <path d="M792 180H830Q850 180 850 160V112Q850 92 870 92H900" stroke="#5eead4" stroke-opacity="0.65" />
+      <path d="M792 180H900" stroke="#60a5fa" stroke-opacity="0.75" />
+      <path d="M792 180H830Q850 180 850 200V248Q850 268 870 268H900" stroke="#a78bfa" stroke-opacity="0.65" />
+      <path d="M992 92H1018Q1040 92 1040 114V158Q1040 180 1062 180H1094" stroke="#5eead4" stroke-opacity="0.65" />
+      <path d="M992 180H1094" stroke="#60a5fa" stroke-opacity="0.75" />
+      <path d="M992 268H1018Q1040 268 1040 246V202Q1040 180 1062 180H1094" stroke="#a78bfa" stroke-opacity="0.65" />
+    </g>
+    <rect x="736" y="152" width="56" height="56" rx="16" fill="#122139" stroke="#3e5b7d" />
+    <g stroke="#b9cbe1" stroke-width="2" stroke-linecap="round">
+      <path d="M751 170H777M751 180H771M751 190H777" />
+    </g>
+    <rect x="900" y="62" width="92" height="60" rx="16" fill="#10303a" stroke="#276966" />
+    <circle cx="946" cy="92" r="9" fill="#5eead4" />
+    <rect x="900" y="150" width="92" height="60" rx="16" fill="#152a46" stroke="#315d90" />
+    <path d="M946 169L929 190M946 169L963 190" stroke="#93c5fd" stroke-width="2" />
+    <g fill="#93c5fd"><circle cx="946" cy="169" r="5" /><circle cx="929" cy="190" r="5" /><circle cx="963" cy="190" r="5" /></g>
+    <rect x="900" y="238" width="92" height="60" rx="16" fill="#25213e" stroke="#56417d" />
+    <path d="M931 257H961V279H931ZM931 257L961 279M961 257L931 279" fill="none" stroke="#c4b5fd" stroke-width="1.6" />
+    <g fill="#c4b5fd"><circle cx="931" cy="257" r="4" /><circle cx="961" cy="257" r="4" /><circle cx="931" cy="279" r="4" /><circle cx="961" cy="279" r="4" /></g>
+    <rect x="1094" y="140" width="80" height="80" rx="22" fill="#123037" stroke="#438a81" stroke-width="1.5" />
+    <path d="M1116 180L1129 193L1153 167" fill="none" stroke="#5eead4" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+    <g fill="#829ab9" font-size="10" font-weight="600" letter-spacing="1.5" text-anchor="middle">
+      <text x="764" y="232">TASKS</text>
+      <text x="946" y="328">SYSTEMS</text>
+      <text x="1134" y="245">EVIDENCE</text>
+    </g>
+  </g>
+</svg>

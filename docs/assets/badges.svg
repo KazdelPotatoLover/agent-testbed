@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="32" viewBox="0 0 520 32" role="img" aria-labelledby="title desc">
+  <title id="title">Agent Testbed project badges</title>
+  <desc id="desc">Status: Early development. License: Apache-2.0. Documentation: Chinese and English.</desc>
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" font-size="11" font-weight="600" text-anchor="middle">
+    <rect x="0.5" y="2.5" width="221" height="27" rx="6" fill="#172237" stroke="#334155" />
+    <path d="M65 3V29" stroke="#334155" />
+    <text x="33" y="20" fill="#cbd5e1">STATUS</text>
+    <circle cx="80" cy="16" r="3" fill="#fbbf24" />
+    <text x="151" y="20" fill="#fde68a">Early development</text>
+    <rect x="230.5" y="2.5" width="167" height="27" rx="6" fill="#172237" stroke="#334155" />
+    <path d="M300 3V29" stroke="#334155" />
+    <text x="265" y="20" fill="#cbd5e1">LICENSE</text>
+    <text x="349" y="20" fill="#99f6e4">Apache-2.0</text>
+    <rect x="406.5" y="2.5" width="113" height="27" rx="6" fill="#172237" stroke="#334155" />
+    <path d="M458 3V29" stroke="#334155" />
+    <text x="433" y="20" fill="#cbd5e1">DOCS</text>
+    <text x="489" y="20" fill="#bfdbfe">ZH / EN</text>
+  </g>
+</svg>
