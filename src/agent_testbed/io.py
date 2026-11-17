@@ -2,6 +2,8 @@
 
 import hashlib
 import json
+import os
+import tempfile
 from datetime import UTC, datetime
 from pathlib import Path, PurePosixPath
 from typing import Any
@@ -76,11 +78,53 @@ def contained_path(root: Path, relative: str) -> Path:
 
 
 def write_new(path: Path, data: bytes) -> None:
-    """Never replace an existing artifact or audit record."""
+    """Publish complete, durable bytes atomically without replacing an existing file."""
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("xb") as stream:
-        stream.write(data)
+    fd, temporary = tempfile.mkstemp(prefix=".publish-", dir=path.parent)
+    try:
+        with os.fdopen(fd, "wb") as stream:
+            stream.write(data)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.link(temporary, path)
+        sync_directory(path.parent)
+    finally:
+        os.unlink(temporary)
+
+
+def sync_directory(path: Path) -> None:
+    fd = os.open(path, os.O_RDONLY | os.O_DIRECTORY)
+    try:
+        os.fsync(fd)
+    finally:
+        os.close(fd)
+
+
+def ensure_json(path: Path, data: Any) -> None:
+    """Idempotent publication: existing data must be byte-for-byte identical."""
+    content = canonical(data) + b"\n"
+    try:
+        write_new(path, content)
+    except FileExistsError:
+        if read_bytes(path) != content:
+            raise TestbedError(f"Existing record disagrees with immutable intent: {path}") from None
 
 
 def write_json_new(path: Path, data: Any) -> None:
     write_new(path, canonical(data) + b"\n")
+
+
+def write_json_replace(path: Path, data: Any) -> None:
+    """Atomically replace a mutable index after publishing complete bytes."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, temporary = tempfile.mkstemp(prefix=".replace-", dir=path.parent)
+    try:
+        with os.fdopen(fd, "wb") as stream:
+            stream.write(canonical(data) + b"\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, path)
+        sync_directory(path.parent)
+    finally:
+        if os.path.exists(temporary):
+            os.unlink(temporary)

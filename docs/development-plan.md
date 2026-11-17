@@ -893,9 +893,17 @@ M0–M5 合计 **21–32 个有效开发日**。考虑联调风险，可按约 5
 
 ### 15.4 M2：可靠性先于烧模型
 
-实现状态持久化、意图日志、幂等查询、暂停/取消、恢复、owner 检查、产物冻结和私有评分边界；新增失败注入的假 CLI/HTTP 服务。
+已交付：
 
-**门槛**：CT04–CT12 通过；连续恢复不会多创建工作；未知资源不会被标成已清理；完成产物不会因 sandbox 删除而丢失；评分器升级无需重新执行 Agent。
+- SQLite 单机状态库，保存 experiment、run、attempt、resource 和只追加 event。
+- 控制器先事务 claim 并写入幂等键；登记 PID、启动 tick、boot ID、owner 和 deadline 后才通过门控管道放行。每个实验只有一个驱动控制器。
+- `pause` 停止新派发，`cancel` 清理经核验的进程组；`resume` 接管已有 attempt 并继续 queued run。已经失败的样本不自动重试，结果发布后崩溃可幂等收集。
+- 控制器/worker 分离；worker 只加载公共任务和 staged 输入，不加载评分资料或提供方凭据。控制器冻结产物、持久化结果并固定历史报告的执行索引。
+- agent_error、timed_out、infra_error、cancelled 与 cleanup 独立记录；覆盖并发 claim、迁移、子进程回收、PID 复用拒绝、门控、中断和幂等恢复。
+
+实际验收：M2 本地 mock 流程 **54 passed，1 skipped**；Docker 沙箱探针仍因宿主版本阻塞。本轮完成本地可靠性部分，**整个 M2 的容器安全隔离验收仍未完成**。
+
+原门槛中与本地控制器对应的部分已验证；sandbox 销毁前导出、远程取消、私有资料不可达、脱离 session 的恶意进程控制和 Docker 强隔离仍待专用环境验证。
 
 ### 15.5 M3：接入系统而不改核心
 

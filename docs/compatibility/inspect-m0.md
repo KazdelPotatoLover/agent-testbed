@@ -1,6 +1,6 @@
 # Inspect M0 兼容性记录
 
-日期：2026-11-16。**结论：Inspect 支持当前 M1 的受信任 mock 闭环；不代表所有 M0 探针或后续生产能力都已通过。**
+日期：2026-11-17（M2 本地验证更新）。**结论：Inspect 支持当前受信任 mock 闭环；M2 本地可靠性已经验证，Docker 强隔离和远程系统仍未通过验收。**
 
 ## 固定环境
 
@@ -25,10 +25,10 @@ PyPI 的 Inspect 元数据声明 Python >=3.11、MIT License；项目只承诺�
 |---|---|---|
 | SP01 基础执行 | 通过（M1 范围） | 两题 × 两系统形成四个 Inspect 单样本日志；solver 不调用 generate；`model_usage={}` |
 | SP02 沙箱文件/快照 | **未通过：环境阻塞** | Docker 显式探针在前置检查失败；Engine 20.10.20 低于包源码要求 24.0.6，且旧 CLI 的 `--format json` 返回字面量 `json`；尚未证明 Inspect 容器销毁前导出 |
-| SP03 停止语义 | 部分通过 | 本地 async solver 超过 1 秒后记录 time limit，cleanup 回调执行；没有验证远程取消、子进程树或强杀资源回收 |
+| SP03 停止语义 | 本地范围通过 | Inspect async solver 的时间限制、cleanup 回调，以及控制器 deadline、取消、TERM/KILL、同进程组子进程回收和 PID 复用拒绝已测；不覆盖脱离 session 的恶意进程、容器或远程服务 |
 | SP04 Bridge | 通过同进程 Chat Completions 子集 | OpenAI SDK 的三次连续对话被转发给本地 `mockllm`，日志记录三条 model event，TCP 禁用；不代表所有 SDK、并发角色、Responses 或远程 BB 调用完整性已验证 |
 | SP05 离线评分 | 通过（本地） | Inspect 原生日志经 `inspect_ai.score` 重评分产生新日志，原日志哈希不变；业务快照也可独立反复评分，无 Agent 重跑 |
-| SP06 中断/恢复证据 | 部分通过 | 强制终止本地 worker 后矩阵和目录保留，status 显示 incomplete，不自动重启；中间推理恢复、远程重连和 SQLite 恢复尚属 M2 |
+| SP06 中断/恢复证据 | 本地范围通过 | SQLite 事务、schema 迁移、门控启动、孤儿 worker 接管、结果发布后恢复、暂停解除和重复 resume 已测；不恢复任意 Agent 内存推理，不接管远程系统 |
 
 测试实现见 [本地 Inspect 探针](<../../tests/test_inspect_compatibility.py>)、[Bridge 探针](<../../tests/test_inspect_bridge.py>)、[Docker 探针](<../../tests/test_inspect_docker.py>)、[中断探针](<../../tests/test_interruption.py>)。
 
@@ -54,14 +54,18 @@ PyPI 的 Inspect 元数据声明 Python >=3.11、MIT License；项目只承诺�
 TESTBED_DOCKER_PROBE=1 .venv/bin/pytest -q tests/test_inspect_docker.py
 ```
 
-本轮默认测试：**32 passed，1 skipped**；skip 是需要显式启用的 Docker 探针。单独启用 Docker 后得到 **1 failed**，原因为上述前置环境不兼容，未绕过、未升级宿主，也未操作既有容器。静态检查通过；远端 CI 未运行。
+本轮默认测试：**54 passed，1 skipped**；skip 是显式启用的 Docker 探针。M2 本地暂停/取消/恢复、孤儿 worker 接管、结果发布后的崩溃恢复、进程组清理、状态迁移及 owner fencing 均已覆盖。worker 没有 outcome 时保留 infra_error，不自动重排队。本轮静态检查通过，未调用真实模型/BB、未执行 Git 提交推送、未核验远端 CI。
 
-另外已实际执行 `uv build`，生成 sdist 和 wheel，检查归档内容未包含 `.tools`、`.venv`、运行 output 或 Git 元数据；在新的项目内虚拟环境中按锁定哈希安装运行依赖，再安装非 editable wheel，重新执行四样本 mock 闭环成功。构建工具提示项目内 cache 可能打包，归档清单复核确认未被包含，构建配置也显式排除了这些目录。
+2026-11-16 单独启用 Docker 探针得到 **1 failed**，原因为上述环境不兼容；本轮未重跑该失败路径，也未升级、绕过或操作已有容器。
+
+2026-11-16 已完成 M1 的 sdist/wheel 构建与独立安装验证。2026-11-17 在本轮代码上重新执行 `uv build`，在独立虚拟环境安装非 editable wheel 后运行四样本演示：**2 passed / 2 failed，4 个资源清理 confirmed，真实模型请求为 0**；随后 resume 不新增 attempt、不覆盖结果、不新增相同自动评分。
+
+归档内容复核排除 `.tools`、`.venv`、运行 output 和 Git 元数据。构建工具仍提示项目内 cache 可能打包，该目录在构建配置中显式排除，并核对实际归档成员。
 
 ## 采用范围与后续门槛
 
-允许继续的范围：受信任确定性 mock、纯文件输入输出、独立规则评分和本地报告。M1 不接受未知适配器或真实模型配置。
+允许继续的范围：受信任确定性 mock、公共文件、独立评分、本地报告及单机状态控制。M2 恢复同一 attempt，并只继续尚未派发的 run；不会自动重排队失败样本。实现和边界见 [ADR-004](<../architecture-decisions/004-m2-local-worker-state.md>)。
 
-进入 M2/不可信代码前：获得合适的专用 Docker Engine 环境并重跑 SP02；完成状态持久化、owner 资源管理、实际取消及私有材料不可达验证。进入 BB/付费实验前另做全调用归属、准入和远程幂等测试。
+进入不可信代码前：获得合适的专用 Docker Engine 环境并重跑 SP02；完成 owner 资源管理、实际取消及私有材料不可达验证。进入 BB/付费实验前另做全调用归属、准入和远程幂等测试。
 
 **没有把失败/未测标成通过，也没有为完成 M0 而改动共享基础设施。**

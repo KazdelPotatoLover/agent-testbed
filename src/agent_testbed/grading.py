@@ -159,6 +159,7 @@ def score_experiment(root: Path, grading_path: Path) -> Path:
             "created_at": now(),
             "grader_id": grading.grader_id,
             "grader_revision": grading.revision,
+            "execution_hash": digest(manifest["results"]),
             "grading_hash": digest(grading.model_dump()),
             "scores": entries,
         },

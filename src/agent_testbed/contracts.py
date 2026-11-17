@@ -133,7 +133,7 @@ class Snapshot(Contract):
 class RunResult(Contract):
     run: RunSpec
     attempt_id: str
-    execution_status: Literal["finished", "agent_error", "infra_error", "timed_out"]
+    execution_status: Literal["finished", "agent_error", "infra_error", "timed_out", "cancelled"]
     self_reported_success: bool | None
     started_at: str
     finished_at: str
@@ -141,7 +141,24 @@ class RunResult(Contract):
     inspect_log: str | None
     snapshot: str
     usage: Usage | None
-    cleanup_status: Literal["not_applicable"] = "not_applicable"
+    cleanup_status: Literal["pending", "confirmed", "unknown", "not_applicable"] = "not_applicable"
+    error: str | None = None
+
+
+class WorkerRequest(Contract):
+    run: RunSpec
+    task: TaskSpec
+    attempt_id: str
+    wall_time_seconds: int = Field(ge=1, le=3600)
+
+
+class WorkerOutcome(Contract):
+    run_id: str
+    attempt_id: str
+    execution_status: Literal["finished", "agent_error", "infra_error", "timed_out"]
+    self_reported_success: bool | None
+    inspect_log: str | None
+    usage: Usage | None
     error: str | None = None
 
 

@@ -12,10 +12,7 @@ from agent_testbed.reports import report_experiment
 def test_agent_exception_is_not_reported_as_finished(
     config_path: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    def fail(*args: object, **kwargs: object) -> str:
-        raise RuntimeError("fixture agent failed")
-
-    monkeypatch.setattr("agent_testbed.backend.execute_mock", fail)
+    monkeypatch.setenv("TESTBED_WORKER_FAIL", "1")
     root = run_experiment(config_path, tmp_path)
     summary = read_json(report_experiment(root) / "summary.json")
     assert all(row["execution_status"] == "agent_error" for row in summary["rows"])

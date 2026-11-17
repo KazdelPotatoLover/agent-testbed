@@ -11,7 +11,9 @@ from pydantic import ValidationError
 from agent_testbed.config import load_experiment
 from agent_testbed.io import TestbedError
 
-app = typer.Typer(no_args_is_help=True, help="Independent Agent evaluations; M1 is mock-only.")
+app = typer.Typer(
+    no_args_is_help=True, help="Independent Agent evaluations; local M2 is mock-only."
+)
 ConfigPath = Annotated[Path, typer.Argument(exists=True, file_okay=True, dir_okay=False)]
 ExperimentPath = Annotated[Path, typer.Argument(exists=True, file_okay=False, dir_okay=True)]
 
@@ -67,10 +69,44 @@ def run(
 
 @app.command()
 def status(experiment: ExperimentPath) -> None:
-    """Inspect recorded execution completion; M1 has no resume support."""
+    """Inspect durable execution state and resource cleanup status."""
     from agent_testbed.controller import experiment_status
 
     _perform(lambda: experiment_status(experiment))
+
+
+@app.command()
+def pause(experiment: ExperimentPath) -> None:
+    """Stop dispatching new runs; the active local worker may finish."""
+    from agent_testbed.controller import pause_experiment
+
+    _perform(lambda: pause_experiment(experiment))
+
+
+@app.command()
+def cancel(experiment: ExperimentPath) -> None:
+    """Request cancellation; the active local worker is terminated by its controller."""
+    from agent_testbed.controller import cancel_experiment
+
+    _perform(lambda: cancel_experiment(experiment))
+
+
+@app.command()
+def resume(
+    experiment: ExperimentPath,
+    config: Annotated[Path | None, typer.Option(exists=True, dir_okay=False)] = None,
+    no_score: Annotated[bool, typer.Option(help="Defer independent grading")] = False,
+) -> None:
+    """Reconcile dead workers and continue queued runs without duplicating live work."""
+    from agent_testbed.controller import resume_experiment
+    from agent_testbed.reports import report_experiment
+
+    def action() -> dict[str, str]:
+        root = resume_experiment(experiment, config, score=not no_score)
+        report = report_experiment(root)
+        return {"experiment": str(root), "report": str(report / "summary.md")}
+
+    _perform(action)
 
 
 @app.command()

@@ -1,5 +1,7 @@
 """Content-hashed snapshots. Immutability is detected, not enforced by OS permissions."""
 
+import os
+import tempfile
 from pathlib import Path
 
 from agent_testbed.contracts import Artifact, Snapshot, TaskSpec
@@ -10,6 +12,7 @@ from agent_testbed.io import (
     read_bytes,
     read_json,
     sha256_file,
+    sync_directory,
     write_json_new,
     write_new,
 )
@@ -26,13 +29,21 @@ def stage_inputs(task: TaskSpec, source: Path, destination: Path) -> None:
 def freeze_outputs(
     task: TaskSpec, output: Path, target: Path, run_id: str, attempt_id: str
 ) -> Snapshot:
+    if target.exists():
+        manifest = target / "manifest.json"
+        snapshot = verify_snapshot(manifest, sha256_file(manifest))
+        if snapshot.run_id != run_id or snapshot.attempt_id != attempt_id:
+            raise TestbedError("Existing snapshot belongs to another attempt")
+        return snapshot
+    target.parent.mkdir(parents=True, exist_ok=True)
+    temporary = Path(tempfile.mkdtemp(prefix=".snapshot-", dir=target.parent))
     artifacts = []
     for spec in task.outputs:
         source = contained_path(output, spec.path)
         if not source.exists():
             continue
         data = read_bytes(source)
-        destination = contained_path(target / "artifacts", spec.path)
+        destination = contained_path(temporary / "artifacts", spec.path)
         write_new(destination, data)
         artifacts.append(Artifact(path=spec.path, sha256=sha256_file(destination), size=len(data)))
     snapshot = Snapshot(
@@ -41,7 +52,10 @@ def freeze_outputs(
         attempt_id=attempt_id,
         artifacts=artifacts,
     )
-    write_json_new(target / "manifest.json", snapshot.model_dump())
+    write_json_new(temporary / "manifest.json", snapshot.model_dump())
+    sync_directory(temporary)
+    os.rename(temporary, target)
+    sync_directory(target.parent)
     return snapshot
 
 

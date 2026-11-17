@@ -9,6 +9,8 @@ from agent_testbed.contracts import RunResult, ScoreResult
 from agent_testbed.io import (
     TestbedError,
     contained_path,
+    digest,
+    ensure_json,
     identifier,
     now,
     read_json,
@@ -59,6 +61,7 @@ def report_experiment(root: Path, score_batch: Path | None = None) -> Path:
                 "task_id": result.run.task_id,
                 "system_id": result.run.system_id,
                 "execution_status": result.execution_status,
+                "cleanup_status": result.cleanup_status,
                 "self_reported_success": result.self_reported_success,
                 "score_status": score.status if score else "unscored",
                 "score_id": score.score_id if score else None,
@@ -75,6 +78,10 @@ def report_experiment(root: Path, score_batch: Path | None = None) -> Path:
                 "score": str(score_and_path[1].relative_to(root)) if score_and_path else None,
             }
         )
+    recorded_ids = {row["run_id"] for row in rows}
+    unrecorded = [
+        state for state in manifest.get("run_states", []) if state["run_id"] not in recorded_ids
+    ]
     summary: dict[str, Any] = {
         "schema_version": "1",
         "experiment_id": manifest["experiment_id"],
@@ -82,6 +89,8 @@ def report_experiment(root: Path, score_batch: Path | None = None) -> Path:
         "mode": "deterministic_mock_only_not_agent_capability_evidence",
         "planned_runs": manifest["planned_runs"],
         "recorded_runs": len(rows),
+        "unrecorded_runs": unrecorded,
+        "run_states": manifest.get("run_states", []),
         "score_counts": dict(Counter(row["score_status"] for row in rows)),
         "systems": {},
         "rows": rows,
@@ -101,11 +110,15 @@ def report_experiment(root: Path, score_batch: Path | None = None) -> Path:
             "model_cost_per_success": 0 if passed and usage_complete else None,
         }
     report = root / "reports" / identifier("report")
+    # Pin the exact execution index: subsequent resume must not alter old report evidence.
+    evidence_manifest = root / "manifests" / f"{digest(manifest)}.json"
+    ensure_json(evidence_manifest, manifest)
     write_json_new(report / "summary.json", summary)
     write_json_new(
         report / "manifest.json",
         {
-            "experiment_sha256": sha256_file(root / "experiment.json"),
+            "experiment_sha256": sha256_file(evidence_manifest),
+            "experiment_manifest": str(evidence_manifest.relative_to(root)),
             "score_batch": str(score_batch.relative_to(root)) if score_batch else None,
             "score_batch_sha256": sha256_file(score_batch) if score_batch else None,
             "score_ids": [row["score_id"] for row in rows],
@@ -148,6 +161,24 @@ def report_experiment(root: Path, score_batch: Path | None = None) -> Path:
             f"| {row['execution_status']} | {row['self_reported_success']} "
             f"| {row['score_status']} | {' · '.join(links)} |"
         )
+    if unrecorded:
+        lines.extend(
+            [
+                "",
+                "## Scheduled runs without execution artifacts",
+                "",
+                "These remain unscored; cancellation before dispatch "
+                "is not an Agent capability failure.",
+                "",
+                "| Run | Phase | Stop reason | Cleanup |",
+                "|---|---|---|---|",
+            ]
+        )
+        for state in unrecorded:
+            lines.append(
+                f"| {_md(state['run_id'])} | {_md(state['phase'])} "
+                f"| {_md(str(state['terminal_reason']))} | {_md(state['cleanup_status'])} |"
+            )
     lines.extend(["", "Zero successes → cost per success is null, not zero.", ""])
     write_new(report / "summary.md", "\n".join(lines).encode())
     return report

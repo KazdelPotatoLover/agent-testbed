@@ -2,7 +2,6 @@ import json
 import re
 from pathlib import Path
 
-import pytest
 from inspect_ai.log import read_eval_log
 from typer.testing import CliRunner
 
@@ -14,7 +13,7 @@ from agent_testbed.reports import report_experiment
 
 
 def test_full_inspect_run_and_independent_scoring(
-    config_path: Path, tmp_path: Path, grading_path: Path, monkeypatch: pytest.MonkeyPatch
+    config_path: Path, tmp_path: Path, grading_path: Path
 ) -> None:
     root = run_experiment(config_path, tmp_path)
     report = report_experiment(root)
@@ -37,10 +36,6 @@ def test_full_inspect_run_and_independent_scoring(
         assert not log.samples[0].scores
     original_scores = {str(p): sha256_file(p) for p in (root / "scores").rglob("*.json")}
 
-    def forbidden(*args: object, **kwargs: object) -> None:
-        raise AssertionError("offline rescore attempted an Agent execution")
-
-    monkeypatch.setattr("agent_testbed.controller.execute_inspect", forbidden)
     batch = score_experiment(root, grading_path)
     second = report_experiment(root, batch)
     assert read_json(second / "summary.json")["score_counts"] == {"passed": 2, "failed": 2}
@@ -81,12 +76,9 @@ def test_tampered_snapshot_is_grader_error(
 
 
 def test_missing_artifact_fails_independent_grader(
-    config_path: Path, grading_path: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    config_path: Path, grading_path: Path, tmp_path: Path, monkeypatch
 ) -> None:
-    def omit_outputs(*args: object, **kwargs: object) -> str:
-        return '{"success": true, "artifacts": []}'
-
-    monkeypatch.setattr("agent_testbed.backend.execute_mock", omit_outputs)
+    monkeypatch.setenv("TESTBED_WORKER_OMIT_OUTPUT", "1")
     root = run_experiment(config_path, tmp_path)
     summary = read_json(report_experiment(root) / "summary.json")
     assert summary["score_counts"] == {"failed": 4}

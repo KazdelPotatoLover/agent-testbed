@@ -21,8 +21,8 @@
 
 </div>
 
-> **Project status · Runnable M1 no-model workflow**
-> Two synthetic tasks and two deterministic mock systems now execute through Inspect, receive independent scores, and produce traceable reports. No real models or BB services are called. The broader architecture below remains a design target; cancellation/recovery, budget admission and production isolation are not implemented.
+> **Project status · Runnable M2 local reliability workflow**
+> Two synthetic tasks and two deterministic mock systems now execute through Inspect, receive independent scores, and persist SQLite run state with pause, cancel, orphan-worker reconnection and idempotent recovery. No real models or BB services are called. Docker isolation, real budget admission and production integration remain unfinished.
 
 ## Quick start (no real model calls)
 
@@ -37,7 +37,7 @@ uv run agent-eval run experiments/smoke-mock.yaml
 
 Expected: four completed runs; `mock-pass` passes both tasks, `mock-wrong-answer` fails both, and real model requests/tokens are zero. The CLI prints the report path. This validates engineering, not real Agent capability.
 
-- [M1 usage and limitations (Chinese)](<docs/quickstart.md>)
+- [M2 usage and limitations (Chinese)](<docs/quickstart.md>)
 - [Inspect compatibility results (Chinese)](<docs/compatibility/inspect-m0.md>)
 - [Detailed development plan (Chinese)](<docs/development-plan.md>)
 
